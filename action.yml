@@ -1,11 +1,16 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'setup-bin'
+description: cache and install a binary to $PATH
+author: supplypike
 inputs:
-  milliseconds: # change this
+  uri:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: download link for binary
+  name:
+    required: true
+    description: name of binary
+  version:
+    required: true
+    description: version of binary
 runs:
   using: 'node12'
   main: 'dist/index.js'
