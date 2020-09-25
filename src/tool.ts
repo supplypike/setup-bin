@@ -1,3 +1,4 @@
+import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
 import {Config} from './config'
 import {extract} from './extract'
@@ -16,6 +17,7 @@ export async function getTool(config: Config): Promise<string> {
   const path = await tc.downloadTool(config.uri)
 
   const extractedPath = await extract(config.uri, path)
+  core.info(extractedPath)
 
   if (lstatSync(extractedPath).isDirectory()) {
     return await tc.cacheDir(extractedPath, config.name, config.version)

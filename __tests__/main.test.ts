@@ -9,5 +9,7 @@ test('dowloads and extracts tool', async () => {
     version: '1.27.4'
   }
 
-  expect(await getTool(config)).toBeTruthy()
+  const path = await getTool(config)
+
+  expect(path).toBeTruthy()
 })
