@@ -164,7 +164,6 @@ function getConfig() {
         core.warning('version was not set');
     }
     const config = { uri, name, version };
-    core.info(JSON.stringify(config, null, 2));
     return config;
 }
 exports.getConfig = getConfig;
@@ -206,8 +205,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
 const core = __importStar(__webpack_require__(186));
+const fs_1 = __webpack_require__(747);
 const config_1 = __webpack_require__(88);
 const tool_1 = __webpack_require__(59);
 function run() {
@@ -216,13 +215,13 @@ function run() {
             const config = config_1.getConfig();
             const tool = yield tool_1.getTool(config);
             core.addPath(tool);
+            fs_1.chmodSync(tool, '755');
         }
         catch (error) {
             core.setFailed(error.message);
         }
     });
 }
-exports.run = run;
 run();
 
 
