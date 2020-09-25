@@ -91,6 +91,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTool = void 0;
+const core = __importStar(__webpack_require__(186));
 const tc = __importStar(__webpack_require__(784));
 const extract_1 = __webpack_require__(259);
 const os_1 = __webpack_require__(87);
@@ -105,6 +106,7 @@ function getTool(config) {
         }
         const path = yield tc.downloadTool(config.uri);
         const extractedPath = yield extract_1.extract(config.uri, path);
+        core.info(extractedPath);
         if (fs_1.lstatSync(extractedPath).isDirectory()) {
             return yield tc.cacheDir(extractedPath, config.name, config.version);
         }
@@ -204,9 +206,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(186));
 const fs_1 = __webpack_require__(747);
+const path_1 = __importDefault(__webpack_require__(622));
 const config_1 = __webpack_require__(88);
 const tool_1 = __webpack_require__(59);
 function run() {
@@ -214,7 +220,7 @@ function run() {
         try {
             const config = config_1.getConfig();
             const tool = yield tool_1.getTool(config);
-            core.addPath(tool);
+            core.addPath(path_1.default.join(tool, config.name));
             fs_1.chmodSync(tool, '755');
         }
         catch (error) {
