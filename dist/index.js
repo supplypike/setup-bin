@@ -211,8 +211,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(186));
-const fs_1 = __webpack_require__(747);
-const path_1 = __importDefault(__webpack_require__(622));
+const chmodr_1 = __importDefault(__webpack_require__(979));
 const config_1 = __webpack_require__(88);
 const tool_1 = __webpack_require__(59);
 function run() {
@@ -220,8 +219,13 @@ function run() {
         try {
             const config = config_1.getConfig();
             const tool = yield tool_1.getTool(config);
-            core.addPath(path_1.default.join(tool, config.name));
-            fs_1.chmodSync(tool, '755');
+            core.addPath(tool);
+            core.info(`toolPath ${tool}`);
+            chmodr_1.default(tool, 0o0755, err => {
+                if (err) {
+                    throw err;
+                }
+            });
         }
         catch (error) {
             core.setFailed(error.message);
@@ -5297,6 +5301,114 @@ function isUnixExecutable(stats) {
         ((stats.mode & 64) > 0 && stats.uid === process.getuid()));
 }
 //# sourceMappingURL=io-util.js.map
+
+/***/ }),
+
+/***/ 979:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+"use strict";
+
+const fs = __webpack_require__(747)
+const path = __webpack_require__(622)
+
+/* istanbul ignore next */
+const LCHMOD = fs.lchmod ? 'lchmod' : 'chmod'
+/* istanbul ignore next */
+const LCHMODSYNC = fs.lchmodSync ? 'lchmodSync' : 'chmodSync'
+
+// fs.readdir could only accept an options object as of node v6
+const nodeVersion = process.version
+let readdir = (path, options, cb) => fs.readdir(path, options, cb)
+let readdirSync = (path, options) => fs.readdirSync(path, options)
+/* istanbul ignore next */
+if (/^v4\./.test(nodeVersion))
+  readdir = (path, options, cb) => fs.readdir(path, cb)
+
+// If a party has r, add x
+// so that dirs are listable
+const dirMode = mode => {
+  if (mode & 0o400)
+    mode |= 0o100
+  if (mode & 0o40)
+    mode |= 0o10
+  if (mode & 0o4)
+    mode |= 0o1
+  return mode
+}
+
+const chmodrKid = (p, child, mode, cb) => {
+  if (typeof child === 'string')
+    return fs.lstat(path.resolve(p, child), (er, stats) => {
+      if (er)
+        return cb(er)
+      stats.name = child
+      chmodrKid(p, stats, mode, cb)
+    })
+
+  if (child.isDirectory()) {
+    chmodr(path.resolve(p, child.name), mode, er => {
+      if (er)
+        return cb(er)
+      fs.chmod(path.resolve(p, child.name), dirMode(mode), cb)
+    })
+  } else
+    fs[LCHMOD](path.resolve(p, child.name), mode, cb)
+}
+
+
+const chmodr = (p, mode, cb) => {
+  readdir(p, { withFileTypes: true }, (er, children) => {
+    // any error other than ENOTDIR means it's not readable, or
+    // doesn't exist.  give up.
+    if (er && er.code !== 'ENOTDIR') return cb(er)
+    if (er) return fs[LCHMOD](p, mode, cb)
+    if (!children.length) return fs.chmod(p, dirMode(mode), cb)
+
+    let len = children.length
+    let errState = null
+    const then = er => {
+      if (errState) return
+      if (er) return cb(errState = er)
+      if (-- len === 0) return fs.chmod(p, dirMode(mode), cb)
+    }
+
+    children.forEach(child => chmodrKid(p, child, mode, then))
+  })
+}
+
+const chmodrKidSync = (p, child, mode) => {
+  if (typeof child === 'string') {
+    const stats = fs.lstatSync(path.resolve(p, child))
+    stats.name = child
+    child = stats
+  }
+
+  if (child.isDirectory()) {
+    chmodrSync(path.resolve(p, child.name), mode)
+    fs.chmodSync(path.resolve(p, child.name), dirMode(mode))
+  } else
+    fs[LCHMODSYNC](path.resolve(p, child.name), mode)
+}
+
+const chmodrSync = (p, mode) => {
+  let children
+  try {
+    children = readdirSync(p, { withFileTypes: true })
+  } catch (er) {
+    if (er && er.code === 'ENOTDIR') return fs[LCHMODSYNC](p, mode)
+    throw er
+  }
+
+  if (children.length)
+    children.forEach(child => chmodrKidSync(p, child, mode))
+
+  return fs.chmodSync(p, dirMode(mode))
+}
+
+module.exports = chmodr
+chmodr.sync = chmodrSync
+
 
 /***/ })
 
