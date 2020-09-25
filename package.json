@@ -26,9 +26,11 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/tool-cache": "^1.6.0"
+    "@actions/tool-cache": "^1.6.0",
+    "chmodr": "^1.2.0"
   },
   "devDependencies": {
+    "@types/chmodr": "^1.0.0",
     "@types/jest": "^26.0.14",
     "@types/node": "^14.11.2",
     "@typescript-eslint/parser": "^4.2.0",

@@ -26,4 +26,4 @@ jobs:
           version: '1.27.4'
       - run: |
           which docker-compose
-          docker-compose --help
+          docker-compose version
