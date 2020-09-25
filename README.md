@@ -7,7 +7,7 @@ This action sets up a binary in \$PATH for use in actions
 ```yaml
 steps:
   - uses: actions/checkout@v2
-  - uses: supplypike/setup-bin@v1.0.0-beta
+  - uses: supplypike/setup-bin@v1
     with:
       uri: 'https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64'
       name: 'docker-compose'
