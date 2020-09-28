@@ -4,6 +4,7 @@ export interface Config {
   uri: string
   name: string
   version: string
+  command?: string
 }
 
 export function getConfig(): Config {
@@ -19,6 +20,8 @@ export function getConfig(): Config {
   if (!version) {
     core.warning('version was not set')
   }
-  const config = {uri, name, version}
+  const command: string = core.getInput('command')
+
+  const config = {uri, name, version, command}
   return config
 }

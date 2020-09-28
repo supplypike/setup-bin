@@ -13,3 +13,16 @@ steps:
       name: 'docker-compose'
       version: '1.27.4'
 ```
+
+You can also run install scripts:
+
+```yaml
+steps:
+  - uses: actions/checkout@v2
+  - uses: supplypike/setup-bin@v1
+    with:
+      uri: 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip'
+          name: 'aws'
+          version: '2.0.30'
+          command: sudo ./aws/install
+```

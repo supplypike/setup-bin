@@ -11,6 +11,9 @@ inputs:
   version:
     required: true
     description: version of binary
+  command:
+    required: false
+    description: install command (e.g make install)
 runs:
   using: 'node12'
   main: 'dist/index.js'
