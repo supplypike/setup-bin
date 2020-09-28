@@ -165,7 +165,8 @@ function getConfig() {
     if (!version) {
         core.warning('version was not set');
     }
-    const config = { uri, name, version };
+    const command = core.getInput('command');
+    const config = { uri, name, version, command };
     return config;
 }
 exports.getConfig = getConfig;
@@ -211,6 +212,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(186));
+const exec = __importStar(__webpack_require__(514));
 const chmodr_1 = __importDefault(__webpack_require__(979));
 const config_1 = __webpack_require__(88);
 const tool_1 = __webpack_require__(59);
@@ -219,13 +221,21 @@ function run() {
         try {
             const config = config_1.getConfig();
             const tool = yield tool_1.getTool(config);
-            core.addPath(tool);
-            core.info(`toolPath ${tool}`);
-            chmodr_1.default(tool, 0o0755, err => {
-                if (err) {
-                    throw err;
-                }
-            });
+            if (config.command) {
+                core.info(`running install command in workdir ${tool}`);
+                yield exec.exec(config.command, [], {
+                    cwd: tool
+                });
+            }
+            else {
+                core.info(`adding to path: ${tool}`);
+                chmodr_1.default(tool, 0o0755, err => {
+                    if (err) {
+                        throw err;
+                    }
+                });
+                core.addPath(tool);
+            }
         }
         catch (error) {
             core.setFailed(error.message);
@@ -1411,21 +1421,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.extract = void 0;
 const tc = __importStar(__webpack_require__(784));
-const os_1 = __webpack_require__(87);
 function extract(uri, file) {
     return __awaiter(this, void 0, void 0, function* () {
-        const path = os_1.tmpdir();
         if (uri.endsWith(`.tar.gz`)) {
-            return yield tc.extractTar(file, path);
+            return yield tc.extractTar(file);
         }
         if (uri.endsWith(`.pkg`)) {
-            return yield tc.extractXar(file, path);
+            return yield tc.extractXar(file);
         }
         if (uri.endsWith(`.7z`)) {
-            return yield tc.extract7z(file, path);
+            return yield tc.extract7z(file);
         }
         if (uri.endsWith(`.zip`)) {
-            return yield tc.extractZip(file, path);
+            return yield tc.extractZip(file);
         }
         return file;
     });
