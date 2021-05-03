@@ -1,4 +1,4 @@
-name: 'setup-bin'
+name: 'setup-binary'
 description: cache and install a binary to $PATH
 author: supplypike
 inputs:
