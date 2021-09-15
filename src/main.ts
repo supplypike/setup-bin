@@ -3,15 +3,11 @@ import * as exec from '@actions/exec'
 import chmodr from 'chmodr'
 import {getConfig} from './config'
 import {getTool} from './tool'
-import path from 'path'
 
 async function run(): Promise<void> {
   try {
     const config = getConfig()
-    let tool = await getTool(config)
-    if (config.subPath) {
-      tool = path.join(tool, subPath) 
-    }
+    const tool = await getTool(config)
 
     if (config.command) {
       core.info(`running install command in workdir ${tool}`)
@@ -28,7 +24,7 @@ async function run(): Promise<void> {
       core.addPath(tool)
     }
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error)
   }
 }
 
