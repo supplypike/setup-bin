@@ -3,10 +3,6 @@ import {getTool} from '../src/tool'
 import {join} from 'path'
 import {tmpdir} from 'os'
 
-beforeAll(() => {
-  process.env.RUNNER_TEMP = process.env.RUNNER_TEMP || tmpdir()
-})
-
 test('dowloads and extracts tool', async () => {
   const config: Config = {
     uri:
@@ -17,7 +13,7 @@ test('dowloads and extracts tool', async () => {
 
   const path = await getTool(config)
 
-  expect(path).toBe(join(process.env.RUNNER_TEMP as string, 'docker-compose/1.27.4/x64'))
+  expect(path.endsWith('docker-compose/1.27.4/x64')).toBeTruthy()
 })
 
 test('dowloads and extracts tool to subpath', async () => {
@@ -31,10 +27,7 @@ test('dowloads and extracts tool to subpath', async () => {
 
   const path = await getTool(config)
 
-  expect(path).toBe(
-    join(
-      process.env.RUNNER_TEMP as string,
-      'prometheus/2.29.2/x64/prometheus-2.29.2.linux-amd64'
-    )
-  )
+  expect(
+    path.endsWith('prometheus/2.29.2/x64/prometheus-2.29.2.linux-amd64')
+  ).toBeTruthy()
 })
