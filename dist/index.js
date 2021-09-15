@@ -89,6 +89,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTool = void 0;
 const core = __importStar(__webpack_require__(186));
@@ -96,19 +99,27 @@ const tc = __importStar(__webpack_require__(784));
 const extract_1 = __webpack_require__(259);
 const os_1 = __webpack_require__(87);
 const fs_1 = __webpack_require__(747);
+const path_1 = __importDefault(__webpack_require__(622));
 function getTool(config) {
     return __awaiter(this, void 0, void 0, function* () {
         process.env.RUNNER_TOOL_CACHE = process.env.RUNNER_TOOL_CACHE || os_1.tmpdir();
         process.env.RUNNER_TEMP = process.env.RUNNER_TEMP || os_1.tmpdir();
+        const outPath = (p) => {
+            if (config.subPath) {
+                return path_1.default.join(p, config.subPath);
+            }
+            return p;
+        };
         const cachedPath = tc.find(config.name, config.version);
         if (cachedPath) {
-            return cachedPath;
+            return outPath(cachedPath);
         }
-        const path = yield tc.downloadTool(config.uri);
-        const extractedPath = yield extract_1.extract(config.uri, path);
+        const download = yield tc.downloadTool(config.uri);
+        const extractedPath = yield extract_1.extract(config.uri, download);
         core.info(extractedPath);
         if (fs_1.lstatSync(extractedPath).isDirectory()) {
-            return yield tc.cacheDir(extractedPath, config.name, config.version);
+            const p = yield tc.cacheDir(extractedPath, config.name, config.version);
+            return outPath(p);
         }
         return yield tc.cacheFile(extractedPath, config.name, config.name, config.version);
     });
@@ -166,7 +177,8 @@ function getConfig() {
         core.warning('version was not set');
     }
     const command = core.getInput('command');
-    const config = { uri, name, version, command };
+    const subPath = core.getInput('subPath');
+    const config = { uri, name, version, command, subPath };
     return config;
 }
 exports.getConfig = getConfig;
@@ -238,7 +250,7 @@ function run() {
             }
         }
         catch (error) {
-            core.setFailed(error.message);
+            core.setFailed(error);
         }
     });
 }

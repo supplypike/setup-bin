@@ -5,6 +5,7 @@ export interface Config {
   name: string
   version: string
   command?: string
+  subPath?: string
 }
 
 export function getConfig(): Config {
@@ -21,7 +22,8 @@ export function getConfig(): Config {
     core.warning('version was not set')
   }
   const command: string = core.getInput('command')
+  const subPath: string = core.getInput('subPath')
 
-  const config = {uri, name, version, command}
+  const config = {uri, name, version, command, subPath}
   return config
 }
