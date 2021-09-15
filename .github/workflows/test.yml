@@ -27,15 +27,3 @@ jobs:
       - run: |
           which docker-compose
           docker-compose version
-  test-cmd:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./
-        with:
-          uri: 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip'
-          name: 'aws'
-          version: '2.0.30'
-          command: sudo ./aws/install
-      - run: |
-          aws --version
