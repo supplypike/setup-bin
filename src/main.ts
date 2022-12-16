@@ -24,7 +24,7 @@ async function run(): Promise<void> {
       core.addPath(tool)
     }
   } catch (error) {
-    core.setFailed(error)
+    core.setFailed(error as Error)
   }
 }
 
