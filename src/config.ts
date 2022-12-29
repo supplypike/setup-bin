@@ -24,6 +24,5 @@ export function getConfig(): Config {
   const command: string = core.getInput('command')
   const subPath: string = core.getInput('subPath')
 
-  const config = {uri, name, version, command, subPath}
-  return config
+  return {uri, name, version, command, subPath}
 }
