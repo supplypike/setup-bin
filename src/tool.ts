@@ -2,9 +2,9 @@ import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
 import {Config} from './config'
 import {extract} from './extract'
-import {tmpdir} from 'os'
-import {lstatSync} from 'fs'
-import path from 'path'
+import {lstatSync} from 'node:fs'
+import path from 'node:path'
+import {tmpdir} from 'node:os'
 
 export async function getTool(config: Config): Promise<string> {
   process.env.RUNNER_TOOL_CACHE = process.env.RUNNER_TOOL_CACHE || tmpdir()
