@@ -29,3 +29,17 @@ test('dowloads and extracts tool to subpath', async () => {
     path.endsWith('prometheus/2.29.2/x64/prometheus-2.29.2.linux-amd64')
   ).toBeTruthy()
 })
+
+
+test('dowloads and extracts tool with windows', async () => {
+  const config: Config = {
+    uri: 'http://downloads.sourceforge.net/gnuwin32/mktemp-1.6-bin.zip',
+    name: 'mktemp.exe',
+    subPath: 'bin',
+    version: '1.6'
+  }
+
+  const path = await getTool(config)
+
+  expect(path.endsWith('mktemp/1.6/mktemp.exe')).toBeTruthy()
+})
