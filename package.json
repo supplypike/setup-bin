@@ -33,7 +33,7 @@
   "devDependencies": {
     "@types/chmodr": "^1.0.3",
     "@types/jest": "^29.2.4",
-    "@types/node": "^16.18.9",
+    "@types/node": "^20.10.5",
     "@typescript-eslint/parser": "^5.46.1",
     "@vercel/ncc": "^0.38.1",
     "eslint": "^8.38.0",
