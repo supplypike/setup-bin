@@ -31,7 +31,7 @@
     "chmodr": "^1.2.0"
   },
   "devDependencies": {
-    "@types/chmodr": "^1.0.0",
+    "@types/chmodr": "^1.0.3",
     "@types/jest": "^29.2.4",
     "@types/node": "^16.18.9",
     "@typescript-eslint/parser": "^5.46.1",
