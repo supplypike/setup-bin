@@ -18,5 +18,5 @@ inputs:
     required: false
     description: path to tool in archive
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
