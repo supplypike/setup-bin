@@ -10,7 +10,7 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: |
           npm install
       - run: |
@@ -18,7 +18,7 @@ jobs:
   test-basic: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: ./
         with:
           uri: 'https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64'
@@ -26,4 +26,5 @@ jobs:
           version: '1.27.4'
       - run: |
           which docker-compose
+      - run: |
           docker-compose version
