@@ -154,13 +154,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
-const chmodr_1 = __importDefault(__nccwpck_require__(8979));
+const node_fs_1 = __nccwpck_require__(7561);
 const config_1 = __nccwpck_require__(88);
 const tool_1 = __nccwpck_require__(8059);
 function run() {
@@ -176,7 +173,7 @@ function run() {
             }
             else {
                 core.info(`adding to path: ${tool}`);
-                (0, chmodr_1.default)(tool, 0o0755, err => {
+                (0, node_fs_1.chmod)(tool, 0o0755, err => {
                     if (err) {
                         throw err;
                     }
@@ -828,7 +825,7 @@ class OidcClient {
                 .catch(error => {
                 throw new Error(`Failed to get ID Token. \n 
         Error Code : ${error.statusCode}\n 
-        Error Message: ${error.result.message}`);
+        Error Message: ${error.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
             if (!id_token) {
@@ -4842,114 +4839,6 @@ function _unique(values) {
 
 /***/ }),
 
-/***/ 8979:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-"use strict";
-
-const fs = __nccwpck_require__(7147)
-const path = __nccwpck_require__(1017)
-
-/* istanbul ignore next */
-const LCHMOD = fs.lchmod ? 'lchmod' : 'chmod'
-/* istanbul ignore next */
-const LCHMODSYNC = fs.lchmodSync ? 'lchmodSync' : 'chmodSync'
-
-// fs.readdir could only accept an options object as of node v6
-const nodeVersion = process.version
-let readdir = (path, options, cb) => fs.readdir(path, options, cb)
-let readdirSync = (path, options) => fs.readdirSync(path, options)
-/* istanbul ignore next */
-if (/^v4\./.test(nodeVersion))
-  readdir = (path, options, cb) => fs.readdir(path, cb)
-
-// If a party has r, add x
-// so that dirs are listable
-const dirMode = mode => {
-  if (mode & 0o400)
-    mode |= 0o100
-  if (mode & 0o40)
-    mode |= 0o10
-  if (mode & 0o4)
-    mode |= 0o1
-  return mode
-}
-
-const chmodrKid = (p, child, mode, cb) => {
-  if (typeof child === 'string')
-    return fs.lstat(path.resolve(p, child), (er, stats) => {
-      if (er)
-        return cb(er)
-      stats.name = child
-      chmodrKid(p, stats, mode, cb)
-    })
-
-  if (child.isDirectory()) {
-    chmodr(path.resolve(p, child.name), mode, er => {
-      if (er)
-        return cb(er)
-      fs.chmod(path.resolve(p, child.name), dirMode(mode), cb)
-    })
-  } else
-    fs[LCHMOD](path.resolve(p, child.name), mode, cb)
-}
-
-
-const chmodr = (p, mode, cb) => {
-  readdir(p, { withFileTypes: true }, (er, children) => {
-    // any error other than ENOTDIR means it's not readable, or
-    // doesn't exist.  give up.
-    if (er && er.code !== 'ENOTDIR') return cb(er)
-    if (er) return fs[LCHMOD](p, mode, cb)
-    if (!children.length) return fs.chmod(p, dirMode(mode), cb)
-
-    let len = children.length
-    let errState = null
-    const then = er => {
-      if (errState) return
-      if (er) return cb(errState = er)
-      if (-- len === 0) return fs.chmod(p, dirMode(mode), cb)
-    }
-
-    children.forEach(child => chmodrKid(p, child, mode, then))
-  })
-}
-
-const chmodrKidSync = (p, child, mode) => {
-  if (typeof child === 'string') {
-    const stats = fs.lstatSync(path.resolve(p, child))
-    stats.name = child
-    child = stats
-  }
-
-  if (child.isDirectory()) {
-    chmodrSync(path.resolve(p, child.name), mode)
-    fs.chmodSync(path.resolve(p, child.name), dirMode(mode))
-  } else
-    fs[LCHMODSYNC](path.resolve(p, child.name), mode)
-}
-
-const chmodrSync = (p, mode) => {
-  let children
-  try {
-    children = readdirSync(p, { withFileTypes: true })
-  } catch (er) {
-    if (er && er.code === 'ENOTDIR') return fs[LCHMODSYNC](p, mode)
-    throw er
-  }
-
-  if (children.length)
-    children.forEach(child => chmodrKidSync(p, child, mode))
-
-  return fs.chmodSync(p, dirMode(mode))
-}
-
-module.exports = chmodr
-chmodr.sync = chmodrSync
-
-
-/***/ }),
-
 /***/ 5911:
 /***/ ((module, exports) => {
 
@@ -7025,6 +6914,14 @@ module.exports = require("https");
 
 "use strict";
 module.exports = require("net");
+
+/***/ }),
+
+/***/ 7561:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:fs");
 
 /***/ }),
 

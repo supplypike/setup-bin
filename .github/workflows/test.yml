@@ -10,7 +10,7 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: |
           npm install
       - run: |
@@ -18,12 +18,13 @@ jobs:
   test-basic: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: ./
         with:
-          uri: 'https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64'
-          name: 'docker-compose'
-          version: '1.27.4'
+          uri: 'https://github.com/google/go-containerregistry/releases/download/v0.19.1/go-containerregistry_Linux_x86_64.tar.gz'
+          name: 'crane'
+          version: '0.19.1'
       - run: |
-          which docker-compose
-          docker-compose version
+          which crane
+      - run: |
+          crane version
