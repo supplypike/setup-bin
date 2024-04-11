@@ -26,5 +26,6 @@ jobs:
           version: '0.19.1'
       - run: |
           which crane
+          ls -al ls -al /opt/hostedtoolcache/crane/0.19.1/x64
       - run: |
           crane version
