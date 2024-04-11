@@ -28,7 +28,7 @@ jobs:
           which crane
       - run: |
           ls -al /opt/hostedtoolcache/crane/0.19.1/x64
-          CHMOD=$(stat -f %Mp%Lp /opt/hostedtoolcache/crane/0.19.1/x64/crane)
+          CHMOD=$(stat -c 'a' /opt/hostedtoolcache/crane/0.19.1/x64/crane)
           echo $CHMOD
           if [ "$CHMOD" != "0755" ]; then exit 1; fi
       - run: |
