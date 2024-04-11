@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
-import {chmod} from 'node:fs'
+import chmodr from 'chmodr'
 import {getConfig} from './config'
 import {getTool} from './tool'
 
@@ -16,7 +16,7 @@ async function run(): Promise<void> {
       })
     } else {
       core.info(`adding to path: ${tool}`)
-      chmod(tool, 0o0755, err => {
+      chmodr(tool, 0o0755, err => {
         if (err) {
           throw err
         }
