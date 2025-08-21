@@ -97,7 +97,7 @@ exports.extract = void 0;
 const tc = __importStar(__nccwpck_require__(7784));
 function extract(uri, file) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (uri.endsWith(`.tar.gz`)) {
+        if (uri.endsWith(`.tar.gz`) || uri.endsWith(`.tgz`)) {
             return yield tc.extractTar(file);
         }
         if (uri.endsWith(`.pkg`)) {

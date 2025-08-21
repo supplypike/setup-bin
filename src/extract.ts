@@ -1,7 +1,7 @@
 import * as tc from '@actions/tool-cache'
 
 export async function extract(uri: string, file: string): Promise<string> {
-  if (uri.endsWith(`.tar.gz`)) {
+  if (uri.endsWith(`.tar.gz`) || uri.endsWith(`.tgz`)) {
     return await tc.extractTar(file)
   }
   if (uri.endsWith(`.pkg`)) {
