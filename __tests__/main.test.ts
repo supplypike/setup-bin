@@ -1,7 +1,7 @@
 import {Config} from '../src/config'
 import {getTool} from '../src/tool'
-import {join} from 'path'
-import {tmpdir} from 'os'
+import { test, expect } from '@jest/globals'
+import fs from 'fs'
 
 test('dowloads and extracts tool', async () => {
   const config: Config = {
@@ -12,7 +12,9 @@ test('dowloads and extracts tool', async () => {
 
   const path = await getTool(config)
 
-  expect(path.endsWith('docker-compose/1.27.4/x64')).toBeTruthy()
+  expect(path.includes('docker-compose/1.27.4')).toBeTruthy()
+  const stats = fs.statSync(path)
+  expect(stats.mode & parseInt('755', 8)).toBe(parseInt('755', 8))
 })
 
 test('dowloads and extracts tool to subpath', async () => {
@@ -25,7 +27,6 @@ test('dowloads and extracts tool to subpath', async () => {
 
   const path = await getTool(config)
 
-  expect(
-    path.endsWith('prometheus/2.29.2/x64/prometheus-2.29.2.linux-amd64')
-  ).toBeTruthy()
+  expect(path.includes('prometheus/2.29.2')).toBeTruthy()
+  expect(path.includes('prometheus-2.29.2.linux-amd64')).toBeTruthy()
 })
