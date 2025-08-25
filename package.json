@@ -30,7 +30,7 @@
     "@actions/tool-cache": "^2.0.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
+    "@biomejs/biome": "2.2.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.3.0",
     "@vercel/ncc": "^0.38.3",
