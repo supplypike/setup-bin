@@ -6,8 +6,8 @@ This action sets up a binary in \$PATH for use in actions
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
-  - uses: supplypike/setup-bin@v4
+  - uses: actions/checkout@v5
+  - uses: supplypike/setup-bin@v5
     with:
       uri: 'https://github.com/google/go-containerregistry/releases/download/v0.19.1/go-containerregistry_Linux_x86_64.tar.gz'
       name: 'crane'
@@ -18,8 +18,8 @@ You can also run install scripts:
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
-  - uses: supplypike/setup-bin@v4
+  - uses: actions/checkout@v5
+  - uses: supplypike/setup-bin@v5
     with:
       uri: 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip'
           name: 'aws'
