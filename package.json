@@ -36,7 +36,7 @@
     "@vercel/ncc": "^0.38.3",
     "jest": "^30.0.5",
     "jest-circus": "^30.0.5",
-    "ts-jest": "^29.4.1",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.9.2"
   }
 }
